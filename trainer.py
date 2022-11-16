@@ -32,9 +32,9 @@ class Trainer:
 
     def train_dynamics(self):
         start_time = time.time()
-        self.algo.save_dynamics_model(
-            save_path=os.path.join(self.logger.writer.get_logdir(), "dynamics_model")
-        )
+#         self.algo.save_dynamics_model(
+#             save_path=os.path.join(self.logger.writer.get_logdir(), "dynamics_model")
+#         )
         self.algo.learn_dynamics()
         self.logger.print("total time: {:.3f}s".format(time.time() - start_time))
         torch.save(self.algo.dynamics_model,os.path.join(self.logger.writer.get_logdir(), "policyDynamics.pth"))
