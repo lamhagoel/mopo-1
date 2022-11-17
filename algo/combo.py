@@ -5,7 +5,7 @@ import torch
 from common.functional import dict_batch_generator
 
 
-class COMBO():
+class COMBO:
     def __init__(
             self,
             policy,
