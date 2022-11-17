@@ -29,5 +29,20 @@ default_config = {
         "model_env_ratio": 0.95,
         "max_model_update_epochs_to_improve": 5,
         "max_model_train_iterations": "None"
+    },
+    "combo_params": {
+        "max_epoch": 125,
+        "rollout_batch_size": 50000,
+        "rollout_mini_batch_size": 10000,
+        "model_retain_epochs": 1,
+        "num_env_steps_per_epoch": 1000,
+        "train_model_interval": 250,
+        "max_trajectory_length": 1000,
+        "eval_interval": 1000,
+        "num_eval_trajectories": 10,
+        "snapshot_interval": 2000,
+        "model_env_ratio": 0.95,
+        "max_model_update_epochs_to_improve": 5,
+        "max_model_train_iterations": "None"
     }
 }

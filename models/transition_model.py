@@ -129,7 +129,7 @@ class TransitionModel:
         return mse_losses, var_losses
 
     @torch.no_grad()
-    def predict(self, obs, act, deterministic=False):
+    def predict(self, obs, act, deterministic=False, penalty_coeff = 1):
         """
         predict next_obs and rew
         """
@@ -166,7 +166,6 @@ class TransitionModel:
         terminals = self.static_fns.termination_fn(obs, act, next_obs)
 
         # penalty rewards
-        penalty_coeff = 1
         penalty_learned_var = True
         if penalty_coeff != 0:
             if not penalty_learned_var:
@@ -185,6 +184,7 @@ class TransitionModel:
             penalized_rewards = rewards - penalty_coeff * penalty
         else:
             penalized_rewards = rewards
+            penalty = 0
 
         assert (type(next_obs) == np.ndarray)
         info = {'penalty': penalty, 'penalized_rewards': penalized_rewards}
