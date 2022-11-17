@@ -126,7 +126,7 @@ class CQLPolicy(nn.Module):
         action_dist = self.get_actions_dist(obs)
         sampled_actions = torch.stack([action_dist.rsample() for _ in range(num_samples_for_estimation)], dim=0)
 
-        random_next_actions = torch.rand(num_samples_for_estimation, actions.shape[0], action.shape[-1]).to(torch.as_tensor(actions).to(self._device)) * 2 - 1
+        random_next_actions = torch.rand(num_samples_for_estimation, actions.shape[0], actions.shape[-1]).to(torch.as_tensor(actions).to(self._device)) * 2 - 1
         next_action_dist, sampled_next_log_prob = self(next_obs)
         next_action_dist = self.get_actions_dist(next_obs)
         sampled_next_actions = torch.stack([next_action_dist.rsample() for _ in range(num_samples_for_estimation)], dim=0)
@@ -145,7 +145,7 @@ class CQLPolicy(nn.Module):
         sampled_q2 = torch.cat([sampled_q2, sampled_next_q2], dim=0) 
 
         #importance sampling
-        _random_log_prob = torch.ones(num_samples_for_estimation, actions.shape[0], 1).to(sampled_q1) * action.shape[-1] * np.log(0.5)
+        _random_log_prob = torch.ones(num_samples_for_estimation, actions.shape[0], 1).to(sampled_q1) * actions.shape[-1] * np.log(0.5)
         sampling_weight = torch.cat([_random_log_prob, sampled_log_prob, _random_log_prob, sampled_next_log_prob], dim=0)
         sampled_q1 = sampled_q1 - sampling_weight
         sampled_q2 = sampled_q2 - sampling_weight
