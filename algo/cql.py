@@ -123,6 +123,7 @@ class CQLPolicy(nn.Module):
         num_samples_for_estimation = 10
         random_actions_shape = list(torch.as_tensor(actions).to(self._device).unsqueeze(0).shape)
         random_actions_shape[0] = num_samples_for_estimation
+
         random_actions = torch.rand(random_actions_shape).to(torch.as_tensor(actions).to(self._device)) * 2 - 1
         action_dist, sampled_log_prob = self(obs)
         action_dist = self.get_actions_dist(obs)
@@ -135,6 +136,7 @@ class CQLPolicy(nn.Module):
 
         sampled_actions = torch.cat([random_actions, sampled_actions], dim=0)
         repeated_obs = torch.repeat_interleave(torch.as_tensor(obs).to(self._device).unsqueeze(0), sampled_actions.shape[0], 0)
+        print(str(random_actions_shape) + " " + str(random_actions.shape) + " " + str(sampled_actions.shape) + " " + str(random_next_actions.shape) + " " + str(sampled_next_actions.shape) + " " + str(sampled_actions.shape) + " " + str(repeated_obs.shape))
         sampled_q1 = self.critic1(repeated_obs, sampled_actions)
         sampled_q2 = self.critic2(repeated_obs, sampled_actions)
 
