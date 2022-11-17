@@ -121,12 +121,14 @@ class CQLPolicy(nn.Module):
 
         # Add the penalty term for conservative estimate
         num_samples_for_estimation = 10
-        random_actions = torch.rand(num_samples_for_estimation, actions.shape[0], actions.shape[-1]).to(torch.as_tensor(actions).to(self._device)) * 2 - 1
+        random_actions_shape = actions.unsqueeze(0).obs_shape
+        random_actions_shape[0] = num_samples_for_estimation
+        random_actions = torch.rand(random_actions_shape).to(torch.as_tensor(actions).to(self._device)) * 2 - 1
         action_dist, sampled_log_prob = self(obs)
         action_dist = self.get_actions_dist(obs)
         sampled_actions = torch.stack([action_dist.rsample() for _ in range(num_samples_for_estimation)], dim=0)
 
-        random_next_actions = torch.rand(num_samples_for_estimation, actions.shape[0], actions.shape[-1]).to(torch.as_tensor(actions).to(self._device)) * 2 - 1
+        random_next_actions = torch.rand(random_actions_shape).to(torch.as_tensor(actions).to(self._device)) * 2 - 1
         next_action_dist, sampled_next_log_prob = self(next_obs)
         next_action_dist = self.get_actions_dist(next_obs)
         sampled_next_actions = torch.stack([next_action_dist.rsample() for _ in range(num_samples_for_estimation)], dim=0)
