@@ -136,6 +136,8 @@ class CQLPolicy(nn.Module):
 
         sampled_actions = torch.cat([random_actions, sampled_actions], dim=0)
         repeated_obs = torch.repeat_interleave(torch.as_tensor(obs).to(self._device).unsqueeze(0), sampled_actions.shape[0], 0)
+        sampled_actions = sampled_actions.reshape((-1,sampled_actions.shape[-1]))
+        repeated_obs = repeated_obs.reshape((-1,repeated_obs.shape[-1]))
         print()
         print(str(obs.shape) + " " + str(actions.shape))
         print(str(random_actions_shape) + " " + str(random_actions.shape) + " " + str(sampled_actions.shape) + " " + str(random_next_actions.shape) + " " + str(sampled_next_actions.shape) + " " + str(sampled_actions.shape) + " " + str(repeated_obs.shape))
@@ -144,6 +146,8 @@ class CQLPolicy(nn.Module):
 
         sampled_next_actions = torch.cat([random_next_actions, sampled_next_actions], dim=0)
         repeated_next_obs = torch.repeat_interleave(torch.as_tensor(next_obs).to(self._device).unsqueeze(0), sampled_next_actions.shape[0], 0)
+        sampled_next_actions = sampled_next_actions.reshape((-1,sampled_next_actions.shape[-1]))
+        repeated_next_obs = repeated_next_obs.reshape((-1,repeated_next_obs.shape[-1]))
         sampled_next_q1 = self.critic1(repeated_next_obs, sampled_next_actions)
         sampled_next_q2 = self.critic2(repeated_next_obs, sampled_next_actions)
 
