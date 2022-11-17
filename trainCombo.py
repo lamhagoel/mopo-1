@@ -103,7 +103,7 @@ def train(args=get_args()):
     critic1 = Critic(critic1_backbone, args.device)
     critic2 = Critic(critic2_backbone, args.device)
     actor_optim = torch.optim.Adam(actor.parameters(), lr=args.actor_lr)
-    critic_optim = torch.optim.Adam([critic1.parameters(), critic2.parameters()], lr=args.critic_lr)
+    critic_optim = torch.optim.Adam([*critic1.parameters(), *critic2.parameters()], lr=args.critic_lr)
     # critic2_optim = torch.optim.Adam(critic2.parameters(), lr=args.critic_lr)
 
     if args.auto_alpha:
