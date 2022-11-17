@@ -121,7 +121,7 @@ class CQLPolicy(nn.Module):
 
         # Add the penalty term for conservative estimate
         num_samples_for_estimation = 10
-        random_actions_shape = torch.as_tensor(actions).to(self._device).unsqueeze(0).shape
+        random_actions_shape = list(torch.as_tensor(actions).to(self._device).unsqueeze(0).shape)
         random_actions_shape[0] = num_samples_for_estimation
         random_actions = torch.rand(random_actions_shape).to(torch.as_tensor(actions).to(self._device)) * 2 - 1
         action_dist, sampled_log_prob = self(obs)
