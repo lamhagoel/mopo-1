@@ -136,7 +136,9 @@ class CQLPolicy(nn.Module):
 
         sampled_actions = torch.cat([random_actions, sampled_actions], dim=0)
         repeated_obs = torch.repeat_interleave(torch.as_tensor(obs).to(self._device).unsqueeze(0), sampled_actions.shape[0], 0)
-        print(str(obs.shape) + " " + str(random_actions_shape) + " " + str(random_actions.shape) + " " + str(sampled_actions.shape) + " " + str(random_next_actions.shape) + " " + str(sampled_next_actions.shape) + " " + str(sampled_actions.shape) + " " + str(repeated_obs.shape))
+        print()
+        print(str(obs.shape) + " " + str(actions.shape))
+        print(str(random_actions_shape) + " " + str(random_actions.shape) + " " + str(sampled_actions.shape) + " " + str(random_next_actions.shape) + " " + str(sampled_next_actions.shape) + " " + str(sampled_actions.shape) + " " + str(repeated_obs.shape))
         sampled_q1 = self.critic1(repeated_obs, sampled_actions)
         sampled_q2 = self.critic2(repeated_obs, sampled_actions)
 
