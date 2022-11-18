@@ -190,7 +190,7 @@ class CQLPolicy(nn.Module):
         # update beta
         # self.lagrange_threshold = 10.0
         if self._is_auto_beta:
-            beta_loss = - torch.mean(torch.exp(self._log_beta) * (q1_penalty - self.lagrange_threshold).detach()) - torch.mean(torch.exp(self._log_beta) * (q2_penalty - self.lagrange_threshold).detach())
+            beta_loss = torch.mean(torch.exp(self._log_beta) * (q1_penalty - self.lagrange_threshold).detach()) + torch.mean(torch.exp(self._log_beta) * (q2_penalty - self.lagrange_threshold).detach())
             self._beta_optim.zero_grad()
             beta_loss.backward()
             self._beta_optim.step()
