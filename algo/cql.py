@@ -97,7 +97,8 @@ class CQLPolicy(nn.Module):
 
         squashed_action = squashed_action*action_scale
         additive_factor = (self.action_space.high + self.action_space.low)/2
-        print(additive_factor)
+        print(additive_factor )
+        print(self.action_space.high.shape)
         squashed_action = squashed_action + additive_factor
         return squashed_action, log_prob
         # return squashed_action*action_scale + (self.action_space.high + self.action_space.low)/2, log_prob
