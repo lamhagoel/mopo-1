@@ -193,7 +193,7 @@ class CQLPolicy(nn.Module):
             self._beta_optim.step()
             self._beta = self._log_beta.detach().exp()
 
-        print(str(q1_penalty.shape) + " " + str(q2_penalty.shape) + " " + str(self._beta) + " " + str(type(self._beta)))
+        # print(str(q1_penalty.shape) + " " + str(q2_penalty.shape) + " " + str(self._beta) + " " + str(type(self._beta)))
         q1_penalty = q1_penalty * self._beta
         q2_penalty = q2_penalty * self._beta
 
