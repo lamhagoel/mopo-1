@@ -139,7 +139,7 @@ def train(args=get_args()):
         gamma=args.gamma,
         alpha=args.alpha,
         beta=args.beta,
-        lagrange_threshold=agrs.lagrange_threshold,
+        lagrange_threshold=args.lagrange_threshold,
         device=args.device
     )
 
