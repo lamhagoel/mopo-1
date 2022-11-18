@@ -96,7 +96,8 @@ class CQLPolicy(nn.Module):
         log_prob = log_prob - torch.log(action_scale * (1 - squashed_action.pow(2)) + self.__eps).sum(-1, keepdim=True)
 
         squashed_action = squashed_action*action_scale
-        squashed_action = squashed_action + (self.action_space.high + self.action_space.low)/2
+        additive_factor = (self.action_space.high + self.action_space.low)/2
+        squashed_action = squashed_action + additive_factor
         return squashed_action, log_prob
         # return squashed_action*action_scale + (self.action_space.high + self.action_space.low)/2, log_prob
 
