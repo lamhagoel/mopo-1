@@ -36,6 +36,7 @@ def get_args():
     parser.add_argument('--target-entropy', type=int, default=-3)
     parser.add_argument('--alpha-lr', type=float, default=3e-4)
     parser.add_argument('--beta-lr', type=float, default=3e-4)
+    parser.add_argument('--lagrange-threshold', type=float, default=0.0)
 
     # dynamics model's arguments
     parser.add_argument("--dynamics-lr", type=float, default=0.001)
@@ -138,6 +139,7 @@ def train(args=get_args()):
         gamma=args.gamma,
         alpha=args.alpha,
         beta=args.beta,
+        lagrange_threshold=agrs.lagrange_threshold,
         device=args.device
     )
 

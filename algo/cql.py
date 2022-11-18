@@ -20,6 +20,7 @@ class CQLPolicy(nn.Module):
         gamma=0.99, 
         alpha=0.2,
         beta=1.0,
+        lagrange_threshold=0.0,
         device="cpu"
     ):
         super().__init__()
@@ -57,6 +58,8 @@ class CQLPolicy(nn.Module):
             self._beta = beta
         
         self.__eps = np.finfo(np.float32).eps.item()
+
+        self.lagrange_threshold = lagrange_threshold
 
         self._device = device
     
@@ -178,12 +181,13 @@ class CQLPolicy(nn.Module):
         q2_penalty = (torch.logsumexp(sampled_q2, dim=0) - q2) #* self.args['base_beta']
 
         # update beta
-        lagrange_threshold = 10.0
-        beta_loss = torch.mean(torch.exp(self._log_beta) * (q1_penalty - lagrange_threshold).detach()) + torch.mean(torch.exp(self._log_beta) * (q2_penalty - lagrange_threshold).detach())
-        self._beta_optim.zero_grad()
-        beta_loss.backward()
-        self._beta_optim.step()
-        self._beta = self._log_beta.detach().exp()
+        # self.lagrange_threshold = 10.0
+        if self._is_auto_beta:
+            beta_loss = - torch.mean(torch.exp(self._log_beta) * (q1_penalty - self.lagrange_threshold).detach()) - torch.mean(torch.exp(self._log_beta) * (q2_penalty - self.lagrange_threshold).detach())
+            self._beta_optim.zero_grad()
+            beta_loss.backward()
+            self._beta_optim.step()
+            self._beta = self._log_beta.detach().exp()
 
 
         q1_penalty = q1_penalty * self._beta
