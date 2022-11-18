@@ -197,7 +197,7 @@ class CQLPolicy(nn.Module):
         q1_penalty = q1_penalty * self._beta
         q2_penalty = q2_penalty * self._beta
 
-        critic_loss = critic1_loss + critic2_loss + torch.mean(q1_penalty) + torch.mean(q2_penalty)
+        critic_loss = 0.5*(critic1_loss + critic2_loss) + torch.mean(q1_penalty) + torch.mean(q2_penalty)
         self.critic_optim.zero_grad()
         critic_loss.backward()
         self.critic_optim.step()
