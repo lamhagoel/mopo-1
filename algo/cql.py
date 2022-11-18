@@ -92,13 +92,13 @@ class CQLPolicy(nn.Module):
 
     def get_sampled_actions(self, obs, num_samples):
         dist = self.actor.get_dist(obs)
-        sampled_actions = torch.stack([dist.rsample() for _ in range(num_samples_for_estimation)], dim=0)
+        sampled_actions = torch.stack([dist.rsample() for _ in range(num_samples)], dim=0)
         log_prob = dist.log_prob(sampled_actions)
 
         action_scale = torch.tensor((self.action_space.high - self.action_space.low) / 2, device=action.device)
         squashed_actions = torch.tanh(sampled_actions)
-        log_prob = log_prob - torch.log(action_scale * (1 - sampled_actions.pow(2)) + self.__eps).sum(-1, keepdim=True)
-        return sampled_actions, log_prob
+        log_prob = log_prob - torch.log(action_scale * (1 - squashed_actions.pow(2)) + self.__eps).sum(-1, keepdim=True)
+        return squashed_actions, log_prob
 
     def sample_action(self, obs, deterministic=False):
         action, _ = self(obs, deterministic)
