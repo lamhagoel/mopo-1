@@ -107,7 +107,7 @@ class CQLPolicy(nn.Module):
         squashed_actions = torch.tanh(sampled_actions)
         log_prob = log_prob - torch.log(action_scale * (1 - squashed_actions.pow(2)) + self.__eps).sum(-1, keepdim=True)
 
-        additive_factor = torch.tensor((self.action_space.high + self.action_space.low) / 2, device=action.device)
+        additive_factor = torch.tensor((self.action_space.high + self.action_space.low) / 2, device=sampled_actions.device)
         return squashed_actions*action_scale + additive_factor, log_prob
 
     def sample_action(self, obs, deterministic=False):
