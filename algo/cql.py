@@ -25,6 +25,8 @@ class CQLPolicy(nn.Module):
     ):
         super().__init__()
 
+        print("4 Beta: " + str(beta))
+
         self.actor = actor
         self.critic1, self.critic1_old = critic1, deepcopy(critic1)
         self.critic1_old.eval()
@@ -57,6 +59,8 @@ class CQLPolicy(nn.Module):
         else:
             self._beta = beta
         
+        print("5 Beta: " + str(self._beta) + " Auto beta: " + str(self._is_auto_beta))
+
         self.__eps = np.finfo(np.float32).eps.item()
 
         self.lagrange_threshold = lagrange_threshold
