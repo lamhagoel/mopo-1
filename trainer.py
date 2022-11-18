@@ -30,7 +30,10 @@ class Trainer:
         self._log_freq = log_freq
         self._eval_episodes = eval_episodes
 
-    def train_dynamics(self):
+    def train_dynamics(self, saved_dir=None):
+        if (saved_dir is not None):
+            self.algo.dynamics_model = torch.load(saved_dir)
+            return
         start_time = time.time()
 #         self.algo.save_dynamics_model(
 #             save_path=os.path.join(self.logger.writer.get_logdir(), "dynamics_model")

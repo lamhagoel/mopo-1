@@ -183,9 +183,11 @@ class CQLPolicy(nn.Module):
         self._beta_optim.zero_grad()
         beta_loss.backward()
         self._beta_optim.step()
+        self._beta = self._log_beta.detach().exp()
 
-        q1_penalty = q1_penalty * torch.exp(self._log_beta)
-        q2_penalty = q2_penalty * torch.exp(self._log_beta)
+
+        q1_penalty = q1_penalty * self._beta
+        q2_penalty = q2_penalty * self._beta
 
         critic_loss = critic1_loss + critic2_loss + torch.mean(q1_penalty) + torch.mean(q2_penalty)
         self.critic_optim.zero_grad()
