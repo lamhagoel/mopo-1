@@ -31,8 +31,11 @@ def get_args():
     parser.add_argument("--tau", type=float, default=0.005)
     parser.add_argument("--alpha", type=float, default=0.2)
     parser.add_argument('--auto-alpha', default=True)
+    parser.add_argument('--beta', default=1)
+    parser.add_argument('--auto-beta', default=True)
     parser.add_argument('--target-entropy', type=int, default=-3)
     parser.add_argument('--alpha-lr', type=float, default=3e-4)
+    parser.add_argument('--beta-lr', type=float, default=3e-4)
 
     # dynamics model's arguments
     parser.add_argument("--dynamics-lr", type=float, default=0.001)
@@ -116,6 +119,11 @@ def train(args=get_args()):
         alpha_optim = torch.optim.Adam([log_alpha], lr=args.alpha_lr)
         args.alpha = (target_entropy, log_alpha, alpha_optim)
 
+    if args.auto_beta:
+        log_beta = torch.zeros(1, requires_grad=True, device=args.device)
+        beta_optim = torch.optim.Adam([log_beta], lr=args.beta_lr)
+        args.beta = (log_beta, beta_optim)
+
     # create policy
     cql_policy = CQLPolicy(
         actor,
@@ -128,6 +136,7 @@ def train(args=get_args()):
         tau=args.tau,
         gamma=args.gamma,
         alpha=args.alpha,
+        beta=args.beta,
         device=args.device
     )
 
