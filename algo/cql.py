@@ -166,6 +166,8 @@ class CQLPolicy(nn.Module):
 
         #importance sampling
         _random_log_prob = torch.ones(num_samples_for_estimation*actions.shape[0], 1).to(sampled_q1) * actions.shape[-1] * np.log(0.5)
+        sampled_log_prob = sampled_log_prob.reshape((-1,sampled_log_prob.shape[-1]))
+        sampled_next_log_prob = sampled_next_log_prob.reshape((-1,sampled_next_log_prob.shape[-1]))
         print()
         print(str(_random_log_prob.shape) + " " + str(sampled_log_prob.shape) + " " + str(sampled_next_log_prob.shape))
         sampling_weight = torch.cat([_random_log_prob, sampled_log_prob, _random_log_prob, sampled_next_log_prob], dim=0)
