@@ -90,9 +90,15 @@ class CQLPolicy(nn.Module):
 
         return squashed_action, log_prob
 
-    def get_actions_dist(self, obs):
+    def get_sampled_actions(self, obs, num_samples):
         dist = self.actor.get_dist(obs)
-        return dist
+        sampled_actions = torch.stack([dist.rsample() for _ in range(num_samples_for_estimation)], dim=0)
+        log_prob = dist.log_prob(sampled_actions)
+
+        action_scale = torch.tensor((self.action_space.high - self.action_space.low) / 2, device=action.device)
+        squashed_actions = torch.tanh(sampled_actions)
+        log_prob = log_prob - torch.log(action_scale * (1 - sampled_actions.pow(2)) + self.__eps).sum(-1, keepdim=True)
+        return sampled_actions, log_prob
 
     def sample_action(self, obs, deterministic=False):
         action, _ = self(obs, deterministic)
@@ -125,16 +131,18 @@ class CQLPolicy(nn.Module):
         random_actions_shape[0] = num_samples_for_estimation
 
         random_actions = torch.rand(random_actions_shape).to(torch.as_tensor(actions).to(self._device)) * 2 - 1
-        action_dist1, sampled_log_prob = self(obs)
-        action_dist = self.get_actions_dist(obs)
-        sampled_actions = torch.stack([action_dist.rsample() for _ in range(num_samples_for_estimation)], dim=0)
-        print()
-        print(str(action_dist1.shape) + " " + str(sampled_log_prob.shape) + " " + str(action_dist.shape) + " " + str(sampled_actions.shape))
+        # action_dist1, sampled_log_prob = self(obs)
+        sampled_actions, sampled_log_prob = self.get_sampled_actions(obs, num_samples_for_estimation)
+        # sampled_actions = torch.stack([action_dist.rsample() for _ in range(num_samples_for_estimation)], dim=0)
+        # print()
+        # print(str(action_dist1.shape) + " " + str(sampled_log_prob.shape) + " " + str(action_dist.shape) + " " + str(sampled_actions.shape))
 
         random_next_actions = torch.rand(random_actions_shape).to(torch.as_tensor(actions).to(self._device)) * 2 - 1
-        next_action_dist, sampled_next_log_prob = self(next_obs)
-        next_action_dist = self.get_actions_dist(next_obs)
-        sampled_next_actions = torch.stack([next_action_dist.rsample() for _ in range(num_samples_for_estimation)], dim=0)
+        # next_action_dist, sampled_next_log_prob = self(next_obs)
+        sampled_next_actions, sampled_next_log_prob = self.get_sampled_actions(obs, num_samples_for_estimation)
+
+        # next_action_dist = self.get_actions_dist(next_obs)
+        # sampled_next_actions = torch.stack([next_action_dist.rsample() for _ in range(num_samples_for_estimation)], dim=0)
 
         sampled_actions = torch.cat([random_actions, sampled_actions], dim=0)
         repeated_obs = torch.repeat_interleave(torch.as_tensor(obs).to(self._device).unsqueeze(0), sampled_actions.shape[0], 0)
