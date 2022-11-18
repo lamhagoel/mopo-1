@@ -25,7 +25,7 @@ class CQLPolicy(nn.Module):
     ):
         super().__init__()
 
-        print("4 Beta: " + str(beta))
+        print("4 Beta: " + str(beta) + " " + str(type(beta)))
 
         self.actor = actor
         self.critic1, self.critic1_old = critic1, deepcopy(critic1)
@@ -59,7 +59,7 @@ class CQLPolicy(nn.Module):
         else:
             self._beta = beta
         
-        print("5 Beta: " + str(self._beta) + " Auto beta: " + str(self._is_auto_beta))
+        print("5 Beta: " + str(self._beta) + " Auto beta: " + str(self._is_auto_beta) + " " + str(type(self._beta)))
 
         self.__eps = np.finfo(np.float32).eps.item()
 
@@ -193,9 +193,9 @@ class CQLPolicy(nn.Module):
             self._beta_optim.step()
             self._beta = self._log_beta.detach().exp()
 
-        print(str(q1_penalty.shape) + " " + str(q2_penalty.shape) + " " + str(self._beta))
-        q1_penalty = torch.mul(q1_penalty, self._beta)
-        q2_penalty = torch.mul(q2_penalty, self._beta)
+        print(str(q1_penalty.shape) + " " + str(q2_penalty.shape) + " " + str(self._beta) + " " + str(type(self._beta)))
+        q1_penalty = q1_penalty * self._beta
+        q2_penalty = q2_penalty * self._beta
 
         critic_loss = critic1_loss + critic2_loss + torch.mean(q1_penalty) + torch.mean(q2_penalty)
         self.critic_optim.zero_grad()

@@ -31,7 +31,7 @@ def get_args():
     parser.add_argument("--tau", type=float, default=0.005)
     parser.add_argument("--alpha", type=float, default=0.2)
     parser.add_argument('--auto-alpha', default=True)
-    parser.add_argument('--beta', default=1)
+    parser.add_argument('--beta', type=float, default=1)
     parser.add_argument('--auto-beta', default=True)
     parser.add_argument('--target-entropy', type=int, default=-3)
     parser.add_argument('--alpha-lr', type=float, default=3e-4)
@@ -64,7 +64,7 @@ def get_args():
 
 def train(args=get_args()):
     print()
-    print("1 Beta: " + str(args.beta) + " Auto beta: " + str(args.auto_beta))
+    print("1 Beta: " + str(args.beta) + " Auto beta: " + str(args.auto_beta) + " " + str(type(args.beta)))
     # create env and dataset
     env = gym.make(args.task)
     dataset = d4rl.qlearning_dataset(env)
@@ -123,13 +123,13 @@ def train(args=get_args()):
         alpha_optim = torch.optim.Adam([log_alpha], lr=args.alpha_lr)
         args.alpha = (target_entropy, log_alpha, alpha_optim)
 
-    print("2 Beta: " + str(args.beta) + " Auto beta: " + str(args.auto_beta))
+    print("2 Beta: " + str(args.beta) + " Auto beta: " + str(args.auto_beta) + " " + str(type(args.beta)))
     if args.auto_beta is True:
         log_beta = torch.zeros(1, requires_grad=True, device=args.device)
         beta_optim = torch.optim.Adam([log_beta], lr=args.beta_lr)
         args.beta = (log_beta, beta_optim)
 
-    print("3 Beta: " + str(args.beta) + " Auto beta: " + str(args.auto_beta))
+    print("3 Beta: " + str(args.beta) + " Auto beta: " + str(args.auto_beta) + " " + str(type(args.beta)))
 
     # create policy
     cql_policy = CQLPolicy(
