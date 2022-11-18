@@ -95,7 +95,10 @@ class CQLPolicy(nn.Module):
         squashed_action = torch.tanh(action)
         log_prob = log_prob - torch.log(action_scale * (1 - squashed_action.pow(2)) + self.__eps).sum(-1, keepdim=True)
 
-        return squashed_action*action_scale + (self.action_space.high + self.action_space.low)/2, log_prob
+        squashed_action = squashed_action*action_scale
+        squashed_action = squashed_action + (self.action_space.high + self.action_space.low)/2
+        return squashed_action, log_prob
+        # return squashed_action*action_scale + (self.action_space.high + self.action_space.low)/2, log_prob
 
     def get_sampled_actions(self, obs, num_samples):
         dist = self.actor.get_dist(obs)
