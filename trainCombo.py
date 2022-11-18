@@ -113,7 +113,7 @@ def train(args=get_args()):
     critic_optim = torch.optim.Adam([*critic1.parameters(), *critic2.parameters()], lr=args.critic_lr)
     # critic2_optim = torch.optim.Adam(critic2.parameters(), lr=args.critic_lr)
 
-    if args.auto_alpha:
+    if args.auto_alpha is True:
         target_entropy = args.target_entropy if args.target_entropy \
             else -np.prod(env.action_space.shape)
 
@@ -124,7 +124,7 @@ def train(args=get_args()):
         args.alpha = (target_entropy, log_alpha, alpha_optim)
 
     print("2 Beta: " + str(args.beta) + " Auto beta: " + str(args.auto_beta))
-    if args.auto_beta:
+    if args.auto_beta is True:
         log_beta = torch.zeros(1, requires_grad=True, device=args.device)
         beta_optim = torch.optim.Adam([log_beta], lr=args.beta_lr)
         args.beta = (log_beta, beta_optim)
