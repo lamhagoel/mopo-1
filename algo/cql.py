@@ -125,9 +125,11 @@ class CQLPolicy(nn.Module):
         random_actions_shape[0] = num_samples_for_estimation
 
         random_actions = torch.rand(random_actions_shape).to(torch.as_tensor(actions).to(self._device)) * 2 - 1
-        action_dist, sampled_log_prob = self(obs)
+        action_dist1, sampled_log_prob = self(obs)
         action_dist = self.get_actions_dist(obs)
         sampled_actions = torch.stack([action_dist.rsample() for _ in range(num_samples_for_estimation)], dim=0)
+        print()
+        print(str(action_dist1.shape) + " " + str(sampled_log_prob.shape) + " " + str(action_dist.shape) + " " + str(sampled_actions.shape))
 
         random_next_actions = torch.rand(random_actions_shape).to(torch.as_tensor(actions).to(self._device)) * 2 - 1
         next_action_dist, sampled_next_log_prob = self(next_obs)
