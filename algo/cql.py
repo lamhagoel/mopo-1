@@ -148,9 +148,9 @@ class CQLPolicy(nn.Module):
         repeated_obs = torch.repeat_interleave(torch.as_tensor(obs).to(self._device).unsqueeze(0), sampled_actions.shape[0], 0)
         sampled_actions = sampled_actions.reshape((-1,sampled_actions.shape[-1]))
         repeated_obs = repeated_obs.reshape((-1,repeated_obs.shape[-1]))
-        print()
-        print(str(obs.shape) + " " + str(actions.shape))
-        print(str(random_actions_shape) + " " + str(random_actions.shape) + " " + str(sampled_actions.shape) + " " + str(random_next_actions.shape) + " " + str(sampled_next_actions.shape) + " " + str(sampled_actions.shape) + " " + str(repeated_obs.shape))
+        # print()
+        # print(str(obs.shape) + " " + str(actions.shape))
+        # print(str(random_actions_shape) + " " + str(random_actions.shape) + " " + str(sampled_actions.shape) + " " + str(random_next_actions.shape) + " " + str(sampled_next_actions.shape) + " " + str(sampled_actions.shape) + " " + str(repeated_obs.shape))
         sampled_q1 = self.critic1(repeated_obs, sampled_actions)
         sampled_q2 = self.critic2(repeated_obs, sampled_actions)
 
@@ -168,8 +168,8 @@ class CQLPolicy(nn.Module):
         _random_log_prob = torch.ones(num_samples_for_estimation*actions.shape[0], 1).to(sampled_q1) * actions.shape[-1] * np.log(0.5)
         sampled_log_prob = sampled_log_prob.reshape((-1,sampled_log_prob.shape[-1]))
         sampled_next_log_prob = sampled_next_log_prob.reshape((-1,sampled_next_log_prob.shape[-1]))
-        print()
-        print(str(_random_log_prob.shape) + " " + str(sampled_log_prob.shape) + " " + str(sampled_next_log_prob.shape))
+        # print()
+        # print(str(_random_log_prob.shape) + " " + str(sampled_log_prob.shape) + " " + str(sampled_next_log_prob.shape))
         sampling_weight = torch.cat([_random_log_prob, sampled_log_prob, _random_log_prob, sampled_next_log_prob], dim=0)
         sampled_q1 = sampled_q1 - sampling_weight
         sampled_q2 = sampled_q2 - sampling_weight
