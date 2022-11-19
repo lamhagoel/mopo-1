@@ -33,6 +33,7 @@ def get_args():
     parser.add_argument('--auto-alpha', default=True)
     parser.add_argument('--target-entropy', type=int, default=-3)
     parser.add_argument('--alpha-lr', type=float, default=3e-4)
+    parser.add_argument('--penalty-type', default=None)
 
     # dynamics model's arguments
     parser.add_argument("--dynamics-lr", type=float, default=0.001)
@@ -138,6 +139,7 @@ def train(args=get_args()):
                                      action_space=env.action_space,
                                      static_fns=static_fns,
                                      lr=args.dynamics_lr,
+                                     penalty_type=args.penalty_type,
                                      **config["transition_params"]
                                      )
 
