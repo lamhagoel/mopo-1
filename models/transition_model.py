@@ -39,6 +39,7 @@ class TransitionModel:
         self.act_normalizer = StandardNormalizer()
         self.model_train_timesteps = 0
         self.penalty_type = penalty_type
+        self.printed_penalty = False
 
     @torch.no_grad()
     def eval_data(self, data, update_elite_models=False):
@@ -172,7 +173,10 @@ class TransitionModel:
         if penalty_coeff != 0:
             if self.penalty_type is None:
                 penalty = np.amax(np.linalg.norm(ensemble_model_stds, axis=2), axis=0)
-            else if self.penalty_type == "diff_means":
+                if not self.printed_penalty:
+                    print("Default penalty - max variance norm")
+                    self.printed_penalty = True
+            elif self.penalty_type == "diff_means":
                 ensemble_means_obs  = pred_diff_means[:, :, 1:]
                 reshaped_means  = ensemble_means_obs.swapaxes(0,1) #Now shape is batch_size x num_models_in_ensemble x _
                 reshaped_means = torch.Tensor(reshaped_means)
@@ -180,13 +184,19 @@ class TransitionModel:
                 means_dist = means_dist.reshape((means_dist.shape[0],-1))
                 means_dist = means_dist.detach().cpu().numpy()
                 penalty = np.amax(means_dist, axis=0)
-            else if self.penalty_type == "var_ensemble":
+                if not self.printed_penalty:
+                    print("Penalty - max means distance")
+                    self.printed_penalty = True
+            elif self.penalty_type == "var_ensemble":
                 model_vars_sum = np.sum(np.linalg.norm(ensemble_model_stds, axis=2), axis=0) # shape: batch_size
                 ensemble_means_obs = pred_diff_means[:, :, 1:]
                 model_means_squares_sum = np.sum(np.linalg.norm(ensemble_means_obs, axis=2), axis=0) #shape: batch_size
                 model_means_sum_square = np.linalg.norm(np.sum(ensemble_means_obs, axis=0) , axis=1) #shape: batch_size
                 penalty = model_vars_sum + model_means_squares_sum - model_means_sum_square
-            else if self.penalty_type == "means_dist_from_center":
+                if not self.printed_penalty:
+                    print("Penalty - Variance of ensemble")
+                    self.printed_penalty = True
+            elif self.penalty_type == "means_dist_from_center":
                 ensemble_means_obs = pred_diff_means[:, :, 1:]
                 mean_obs_means = np.mean(ensemble_means_obs, axis=0)  # average predictions over models
                 diffs = ensemble_means_obs - mean_obs_means
@@ -197,8 +207,14 @@ class TransitionModel:
                     diffs = diffs / obs_sigma
                 dists = np.linalg.norm(diffs, axis=2)  # distance in obs space
                 penalty = np.max(dists, axis=0)  # max distances over models
+                if not self.printed_penalty:
+                    print("Penalty - Max means dist from center")
+                    self.printed_penalty = True
             else:
                 penalty = np.amax(np.linalg.norm(ensemble_model_stds, axis=2), axis=0)
+                if not self.printed_penalty:
+                    print("Default penalty - max variance norm")
+                    self.printed_penalty = True
             penalized_rewards = rewards - penalty_coeff * penalty
         else:
             penalized_rewards = rewards
