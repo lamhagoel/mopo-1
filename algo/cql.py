@@ -183,7 +183,7 @@ class CQLPolicy(nn.Module):
         exp_q1s = torch.exp(sampled_q1)
         exp_q2s = torch.exp(sampled_q2)
         max_exp_q1 = torch.max(sampled_q1)
-        max_exp_q2 = torch.max(sampled_2)
+        max_exp_q2 = torch.max(sampled_q2)
         exp_q1s  = torch.div(exp_q1s, max_exp_q1)
         exp_q2s  = torch.div(exp_q2s, max_exp_q2)
 
