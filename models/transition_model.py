@@ -180,7 +180,7 @@ class TransitionModel:
                 ensemble_means_obs  = pred_diff_means[:, :, 1:]
                 reshaped_means  = ensemble_means_obs.swapaxes(0,1) #Now shape is batch_size x num_models_in_ensemble x _
                 reshaped_means = torch.Tensor(reshaped_means)
-                means_dist = torch.cdist(means_tensor, means_tensor, p = 2) #Shape: batch_size x num_models x num_models
+                means_dist = torch.cdist(reshaped_means, reshaped_means, p = 2) #Shape: batch_size x num_models x num_models
                 means_dist = means_dist.reshape((means_dist.shape[0],-1))
                 means_dist = means_dist.detach().cpu().numpy()
                 penalty = np.amax(means_dist, axis=0)
