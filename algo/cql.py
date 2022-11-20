@@ -180,18 +180,18 @@ class CQLPolicy(nn.Module):
         sampled_q1 = sampled_q1 - sampling_weight
         sampled_q2 = sampled_q2 - sampling_weight
 
-        exp_q1s = torch.exp(sampled_q1)
-        exp_q2s = torch.exp(sampled_q2)
-        max_exp_q1 = torch.max(sampled_q1)
-        max_exp_q2 = torch.max(sampled_q2)
-        exp_q1s  = torch.div(exp_q1s, max_exp_q1)
-        exp_q2s  = torch.div(exp_q2s, max_exp_q2)
+        # exp_q1s = torch.exp(sampled_q1)
+        # exp_q2s = torch.exp(sampled_q2)
+        # max_exp_q1 = torch.max(sampled_q1)
+        # max_exp_q2 = torch.max(sampled_q2)
+        # exp_q1s  = torch.div(exp_q1s, max_exp_q1)
+        # exp_q2s  = torch.div(exp_q2s, max_exp_q2)
 
-        q1_penalty = (torch.mean(torch.mul(sampled_q1, exp_q1s), dim=0) - q1) #* self.args['base_beta']
-        q2_penalty = (torch.mean(torch.mul(sampled_q2, exp_q2s), dim=0) - q2) #* self.args['base_beta']
+        # q1_penalty = (torch.mean(torch.mul(sampled_q1, exp_q1s), dim=0) - q1) #* self.args['base_beta']
+        # q2_penalty = (torch.mean(torch.mul(sampled_q2, exp_q2s), dim=0) - q2) #* self.args['base_beta']
 
-        # q1_penalty = (torch.logsumexp(sampled_q1, dim=0) - q1) #* self.args['base_beta']
-        # q2_penalty = (torch.logsumexp(sampled_q2, dim=0) - q2) #* self.args['base_beta']
+        q1_penalty = (torch.logsumexp(sampled_q1, dim=0) - q1) #* self.args['base_beta']
+        q2_penalty = (torch.logsumexp(sampled_q2, dim=0) - q2) #* self.args['base_beta']
         return q1_penalty, q2_penalty
 
     def learn(self, data):
