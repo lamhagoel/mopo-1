@@ -126,7 +126,7 @@ class CQLPolicy(nn.Module):
         action, _ = self(obs, deterministic)
         return action.cpu().detach().numpy()
 
-    def estimate_penalties(self):
+    def estimate_penalties(self, obs, next_obs, q1, q2):
         # Add the penalty term for conservative estimate
         num_samples_for_estimation = 10
         # random_actions_shape = list(torch.as_tensor(actions).to(self._device).unsqueeze(0).shape)
@@ -219,7 +219,7 @@ class CQLPolicy(nn.Module):
             if not self.printed_penalty_type:
                 print("Sampling from previous policy for penalty")
                 self.printed_penalty_type = True
-            q1_penalty, q2_penalty = estimate_penalties()
+            q1_penalty, q2_penalty = self.estimate_penalties(obs, next_obs, q1, q2)
         else:
             # Add the penalty term for conservative estimate
             num_samples_for_estimation = 10
