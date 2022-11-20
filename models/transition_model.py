@@ -177,19 +177,19 @@ class TransitionModel:
                     print("Default penalty - max variance norm")
                     self.printed_penalty = True
             elif self.penalty_type == "diff_means":
-                print(str(pred_diff_means.shape))
+                # print(str(pred_diff_means.shape))
                 ensemble_means_obs  = pred_diff_means[:, :, 1:]
-                print(str(ensemble_means_obs.shape))
+                # print(str(ensemble_means_obs.shape))
                 reshaped_means  = ensemble_means_obs.swapaxes(0,1) #Now shape is batch_size x num_models_in_ensemble x _
-                print(str(reshaped_means.shape))
+                # print(str(reshaped_means.shape))
                 reshaped_means = torch.Tensor(reshaped_means)
                 means_dist = torch.cdist(reshaped_means, reshaped_means, p = 2) #Shape: batch_size x num_models x num_models
-                print(str(means_dist.shape))
+                # print(str(means_dist.shape))
                 means_dist = means_dist.reshape((means_dist.shape[0],-1))
-                print(str(means_dist.shape))
+                # print(str(means_dist.shape))
                 means_dist = means_dist.detach().cpu().numpy()
-                penalty = np.amax(means_dist, axis=0)
-                print(str(penalty.shape) + " " + str(rewards.shape))
+                penalty = np.amax(means_dist, axis=1)
+                # print(str(penalty.shape) + " " + str(rewards.shape))
                 if not self.printed_penalty:
                     print("Penalty - max means distance")
                     self.printed_penalty = True
