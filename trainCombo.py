@@ -37,6 +37,7 @@ def get_args():
     parser.add_argument('--alpha-lr', type=float, default=3e-4)
     parser.add_argument('--beta-lr', type=float, default=3e-4)
     parser.add_argument('--lagrange-threshold', type=float, default=0.0)
+    parser.add_argument('--sample-from-previous', type=bool, default=False)
 
     # dynamics model's arguments
     parser.add_argument("--dynamics-lr", type=float, default=0.001)
@@ -145,6 +146,7 @@ def train(args=get_args()):
         alpha=args.alpha,
         beta=args.beta,
         lagrange_threshold=args.lagrange_threshold,
+        sample_from_previous = args.sample_from_previous,
         device=args.device
     )
 
