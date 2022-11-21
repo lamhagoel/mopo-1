@@ -79,7 +79,7 @@ class Trainer:
         
             # save policy
             torch.save(self.algo.policy.state_dict(), os.path.join(self.logger.writer.get_logdir(), "policy.pth"))
-            if e % save_freq == 0 and self.model_save_dir is not None:
+            if e % self.save_freq == 0 and self.model_save_dir is not None:
                 torch.save(self.algo.policy.state_dict(), self.model_save_dir + str(e) + ".pth")
         self.logger.print("total time: {:.3f}s".format(time.time() - start_time))
 
