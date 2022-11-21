@@ -17,7 +17,10 @@ class Trainer:
         rollout_freq,
         logger,
         log_freq,
-        eval_episodes=10
+        eval_episodes=10,
+        model_save_dir,
+        dynamics_model_save_dir,
+        save_freq=100
     ):
         self.algo = algo
         self.eval_env = eval_env
@@ -29,6 +32,9 @@ class Trainer:
         self.logger = logger
         self._log_freq = log_freq
         self._eval_episodes = eval_episodes
+        self.model_save_dir = model_save_dir
+        self.dynamics_model_save_dir = dynamics_model_save_dir
+        self.save_freq = save_freq
 
     def train_dynamics(self, saved_dir=None):
         if (saved_dir is not None):
@@ -41,6 +47,8 @@ class Trainer:
         self.algo.learn_dynamics()
         self.logger.print("total time: {:.3f}s".format(time.time() - start_time))
         torch.save(self.algo.dynamics_model,os.path.join(self.logger.writer.get_logdir(), "policyDynamics.pth"))
+        if self.dynamics_model_save_dir is not None:
+            torch.save(self.algo.dynamics_model,self.dynamics_model_save_dir + ".pth")
 
     def train_policy(self):
         start_time = time.time()
@@ -71,6 +79,8 @@ class Trainer:
         
             # save policy
             torch.save(self.algo.policy.state_dict(), os.path.join(self.logger.writer.get_logdir(), "policy.pth"))
+            if e % save_freq == 0 and self.model_save_dir is not None:
+                torch.save(self.algo.policy.state_dict(), self.model_save_dir + str(e) + ".pth")
         self.logger.print("total time: {:.3f}s".format(time.time() - start_time))
 
     def _evaluate(self):

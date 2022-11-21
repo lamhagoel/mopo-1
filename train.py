@@ -34,6 +34,9 @@ def get_args():
     parser.add_argument('--target-entropy', type=int, default=-3)
     parser.add_argument('--alpha-lr', type=float, default=3e-4)
     parser.add_argument('--penalty-type', default=None)
+    parser.add_argument('--model-save-dir', default=None)
+    parser.add_argument('--dynamics-model-save-dir', default=None)
+    parser.add_argument('--save-freq', type=int, default=100)
 
     # dynamics model's arguments
     parser.add_argument("--dynamics-lr", type=float, default=0.001)
@@ -183,7 +186,10 @@ def train(args=get_args()):
         rollout_freq=args.rollout_freq,
         logger=logger,
         log_freq=args.log_freq,
-        eval_episodes=args.eval_episodes
+        eval_episodes=args.eval_episodes,
+        model_save_dir = args.model_save_dir,
+        dynamics_model_save_dir = args.dynamics_model_save_dir,
+        save_freq = args.save_freq
     )
 
     # pretrain dynamics model on the whole dataset
