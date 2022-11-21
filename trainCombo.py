@@ -40,6 +40,8 @@ def get_args():
     parser.add_argument('--sample-from-previous', type=bool, default=False)
     parser.add_argument('--model-save-dir', type=str, default=None)
     parser.add_argument('--dynamics-model-save-dir', type=str, default=None)
+    parser.add_argument('--saved-model-dir', type=str, default=None)
+    parser.add_argument('--start-epoch', type=int, default=1)
     parser.add_argument('--save-freq', type=int, default=50)
     parser.add_argument('--output-log-file', type=str, default=None)
 
@@ -212,7 +214,7 @@ def train(args=get_args()):
     trainer.train_dynamics(args.saved_dynamics_model_dir)
 
     # begin train
-    trainer.train_policy()
+    trainer.train_policy(args.saved_model_dir, args.start_epoch)
 
 
 if __name__ == "__main__":

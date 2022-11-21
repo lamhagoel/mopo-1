@@ -50,11 +50,13 @@ class Trainer:
         if self.dynamics_model_save_dir is not None:
             torch.save(self.algo.dynamics_model,self.dynamics_model_save_dir + ".pth")
 
-    def train_policy(self):
+    def train_policy(self, saved_model_path=None, start_epoch=1):
+        if saved_model_path is not None:
+            self.algo.policy.load_state_dict(torch.load(saved_model_path))
         start_time = time.time()
         num_timesteps = 0
         # train loop
-        for e in range(1, self._epoch + 1):
+        for e in range(start_epoch, self._epoch + 1):
             self.algo.policy.train()
             with tqdm(total=self._step_per_epoch, desc=f"Epoch #{e}/{self._epoch}") as t:
                 while t.n < t.total:
