@@ -18,8 +18,8 @@ class Trainer:
         logger,
         log_freq,
         eval_episodes=10,
-        model_save_dir,
-        dynamics_model_save_dir,
+        model_save_dir=None,
+        dynamics_model_save_dir=None,
         save_freq=100
     ):
         self.algo = algo
