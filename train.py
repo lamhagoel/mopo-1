@@ -37,6 +37,7 @@ def get_args():
     parser.add_argument('--model-save-dir', default=None)
     parser.add_argument('--dynamics-model-save-dir', default=None)
     parser.add_argument('--save-freq', type=int, default=100)
+    parser.add_argument('--output-log-file', type=str, default=None)
 
     # dynamics model's arguments
     parser.add_argument("--dynamics-lr", type=float, default=0.001)
@@ -84,7 +85,7 @@ def train(args=get_args()):
     log_path = os.path.join(args.logdir, args.task, args.algo_name, log_file)
     writer = SummaryWriter(log_path)
     writer.add_text("args", str(args))
-    logger = Logger(writer)
+    logger = Logger(writer, args.output_log_file)
 
     # import configs
     task = args.task.split('-')[0]
