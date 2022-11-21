@@ -6,8 +6,12 @@ class Logger:
     def __init__(self, writer, output_file, output_fname="progress.txt"):
         self.writer = writer
         self.output_file = open(os.path.join(self.writer.get_logdir(), output_fname), 'w')
-        self.output_file2 = open(output_file, 'w')
         atexit.register(self.output_file.close)
+        
+        self.output_file2 = output_file
+        if self.output_file2 is not None:
+            self.output_file2 = open(self.output_file2, 'w')
+            atexit.register(self.output_file2.close)
 
     def record(self, tag, scalar_value, global_step, printed=True):
         self.writer.add_scalar(tag, scalar_value, global_step)
