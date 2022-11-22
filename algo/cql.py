@@ -126,7 +126,7 @@ class CQLPolicy(nn.Module):
         action, _ = self(obs, deterministic)
         return action.cpu().detach().numpy()
 
-    def estimate_penalties(self, obs, next_obs, q1, q2):
+    def estimate_penalties(self, obs, next_obs, q1, q2, increaseExpData):
         # Add the penalty term for conservative estimate
         num_samples_for_estimation = 10
         # random_actions_shape = list(torch.as_tensor(actions).to(self._device).unsqueeze(0).shape)
@@ -190,11 +190,15 @@ class CQLPolicy(nn.Module):
         # q1_penalty = (torch.mean(torch.mul(sampled_q1, exp_q1s), dim=0) - q1) #* self.args['base_beta']
         # q2_penalty = (torch.mean(torch.mul(sampled_q2, exp_q2s), dim=0) - q2) #* self.args['base_beta']
 
-        q1_penalty = (torch.logsumexp(sampled_q1, dim=0) - q1) #* self.args['base_beta']
-        q2_penalty = (torch.logsumexp(sampled_q2, dim=0) - q2) #* self.args['base_beta']
+        if increaseExpData:
+            q1_penalty = (torch.logsumexp(sampled_q1, dim=0) - q1) #* self.args['base_beta']
+            q2_penalty = (torch.logsumexp(sampled_q2, dim=0) - q2) #* self.args['base_beta']
+        else:
+            q1_penalty = torch.logsumexp(sampled_q1, dim=0) #* self.args['base_beta']
+            q2_penalty = torch.logsumexp(sampled_q2, dim=0) #* self.args['base_beta']
         return q1_penalty, q2_penalty
 
-    def learn(self, data):
+    def learn(self, data, increaseExpData=True):
         obs, actions, next_obs, terminals, rewards = data["observations"], \
             data["actions"], data["next_observations"], data["terminals"], data["rewards"]
         
@@ -219,7 +223,7 @@ class CQLPolicy(nn.Module):
             if not self.printed_penalty_type:
                 print("Sampling from previous policy for penalty")
                 self.printed_penalty_type = True
-            q1_penalty, q2_penalty = self.estimate_penalties(obs, next_obs, q1, q2)
+            q1_penalty, q2_penalty = self.estimate_penalties(obs, next_obs, q1, q2, increaseExpData)
         else:
             # Add the penalty term for conservative estimate
             num_samples_for_estimation = 10
@@ -270,8 +274,12 @@ class CQLPolicy(nn.Module):
             sampled_q1 = sampled_q1 - sampling_weight
             sampled_q2 = sampled_q2 - sampling_weight
 
-            q1_penalty = (torch.logsumexp(sampled_q1, dim=0) - q1) #* self.args['base_beta']
-            q2_penalty = (torch.logsumexp(sampled_q2, dim=0) - q2) #* self.args['base_beta']
+            if increaseExpData:
+                q1_penalty = (torch.logsumexp(sampled_q1, dim=0) - q1) #* self.args['base_beta']
+                q2_penalty = (torch.logsumexp(sampled_q2, dim=0) - q2) #* self.args['base_beta']
+            else:
+                q1_penalty = torch.logsumexp(sampled_q1, dim=0) #* self.args['base_beta']
+                q2_penalty = torch.logsumexp(sampled_q2, dim=0) #* self.args['base_beta']
 
         # update beta
         # self.lagrange_threshold = 10.0

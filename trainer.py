@@ -50,7 +50,7 @@ class Trainer:
         if self.dynamics_model_save_dir is not None:
             torch.save(self.algo.dynamics_model,self.dynamics_model_save_dir + ".pth")
 
-    def train_policy(self, saved_model_path=None, start_epoch=1):
+    def train_policy(self, saved_model_path=None, start_epoch=1, increaseExpData=True):
         if saved_model_path is not None:
             self.algo.policy.load_state_dict(torch.load(saved_model_path))
         start_time = time.time()
@@ -63,7 +63,7 @@ class Trainer:
                     if num_timesteps % self._rollout_freq == 0:
                         self.algo.rollout_transitions()
                     # update policy by sac
-                    loss = self.algo.learn_policy()
+                    loss = self.algo.learn_policy(increaseExpData)
                     t.set_postfix(**loss)
                     # log
                     if num_timesteps % self._log_freq == 0:

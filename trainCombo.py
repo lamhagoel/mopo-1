@@ -44,6 +44,7 @@ def get_args():
     parser.add_argument('--start-epoch', type=int, default=1)
     parser.add_argument('--save-freq', type=int, default=50)
     parser.add_argument('--output-log-file', type=str, default=None)
+    parser.add_argument('--increase-exp-data', type-bool, default=True)
 
     # dynamics model's arguments
     parser.add_argument("--dynamics-lr", type=float, default=0.001)
@@ -214,7 +215,7 @@ def train(args=get_args()):
     trainer.train_dynamics(args.saved_dynamics_model_dir)
 
     # begin train
-    trainer.train_policy(args.saved_model_dir, args.start_epoch)
+    trainer.train_policy(args.saved_model_dir, args.start_epoch, args.increase_exp_data)
 
 
 if __name__ == "__main__":

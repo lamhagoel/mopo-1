@@ -136,7 +136,7 @@ class COMBO:
         return loss
     """
 
-    def learn_policy(self):
+    def learn_policy(self, increaseExpData):
         real_sample_size = int(self._batch_size * self._real_ratio)
         fake_sample_size = self._batch_size - real_sample_size
         real_batch = self.offline_buffer.sample(batch_size=real_sample_size)
@@ -149,7 +149,7 @@ class COMBO:
             "terminals": np.concatenate([real_batch["terminals"], fake_batch["terminals"]], axis=0),
             "rewards": np.concatenate([real_batch["rewards"], fake_batch["rewards"]], axis=0)
         }
-        loss = self.policy.learn(data)
+        loss = self.policy.learn(data, increaseExpData)
         return loss
 
     def save_dynamics_model(self, save_path):
