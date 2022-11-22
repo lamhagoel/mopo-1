@@ -44,7 +44,7 @@ def get_args():
     parser.add_argument('--start-epoch', type=int, default=1)
     parser.add_argument('--save-freq', type=int, default=50)
     parser.add_argument('--output-log-file', type=str, default=None)
-    parser.add_argument('--increase-exp-data', type-bool, default=True)
+    parser.add_argument('--increase-exp-data', type=bool, default=True)
 
     # dynamics model's arguments
     parser.add_argument("--dynamics-lr", type=float, default=0.001)
