@@ -135,8 +135,9 @@ class MOPO:
         )
         return loss
     """
+    """we don't use the parameter increaseExpData - just for interface compatibility"""
 
-    def learn_policy(self, increaseExpData=True """we don't use this parameter - just for interface compatibility"""): 
+    def learn_policy(self, increaseExpData=True ): 
         real_sample_size = int(self._batch_size * self._real_ratio)
         fake_sample_size = self._batch_size - real_sample_size
         real_batch = self.offline_buffer.sample(batch_size=real_sample_size)
