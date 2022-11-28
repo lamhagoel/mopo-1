@@ -116,7 +116,7 @@ def train(args=get_args()):
     # print("1 Beta: " + str(args.beta) + " Auto beta: " + str(args.auto_beta) + " " + str(type(args.beta)))
     # create env and dataset
     env = gym.make(args.task)
-    dataset = d4rl.qlearning_dataset(env)
+    # dataset = d4rl.qlearning_dataset(env)
     args.obs_shape = env.observation_space.shape
     args.action_dim = np.prod(env.action_space.shape)
 
@@ -206,29 +206,12 @@ def train(args=get_args()):
                                      **config["transition_params"]
                                      )
 
-    # create buffer
-    offline_buffer = ReplayBuffer(
-        buffer_size=len(dataset["observations"]),
-        obs_shape=args.obs_shape,
-        obs_dtype=np.float32,
-        action_dim=args.action_dim,
-        action_dtype=np.float32
-    )
-    offline_buffer.load_dataset(dataset)
-    model_buffer = ReplayBuffer(
-        buffer_size=args.rollout_batch_size * args.rollout_length * args.model_retain_epochs,
-        obs_shape=args.obs_shape,
-        obs_dtype=np.float32,
-        action_dim=args.action_dim,
-        action_dtype=np.float32
-    )
-
     # create COMBO algo
     algo = COMBO(
         cql_policy,
         dynamics_model,
-        offline_buffer=offline_buffer,
-        model_buffer=model_buffer,
+        offline_buffer=None,
+        model_buffer=None,
         reward_penalty_coef=args.reward_penalty_coef,
         rollout_length=args.rollout_length,
         batch_size=args.batch_size,
