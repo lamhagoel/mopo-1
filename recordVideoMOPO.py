@@ -80,16 +80,16 @@ def eval_record_video(algo, video_folder, envName, deterministic):
                                 record_video_trigger=lambda step: step == 0, video_length=num_steps,
                                 name_prefix=prefix)
 
+    # algo.policy.eval()
     obs = eval_env.reset()
     # env.render()
-    algo.policy.eval()
 
     for step in range(num_steps):
         print(step)
         # take random action, but you can also do something more intelligent
         # action = my_intelligent_agent_fn(obs) 
-        # action = eval_env.action_space.sample()
-        action = algo.policy.sample_action(obs, deterministic=deterministic)
+        action = eval_env.action_space.sample()
+        # action = algo.policy.sample_action(obs, deterministic=deterministic)
         
         # apply the action
         obs, reward, done, info = eval_env.step(action)
