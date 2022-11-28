@@ -138,7 +138,7 @@ def train(args=get_args()):
     logger = Logger(writer, args.output_log_file)
 
     # import configs
-    task = args.task.split('-')[0]
+    task = args.task.split('-')[0].lower()
     import_path = f"static_fns.{task}"
     static_fns = importlib.import_module(import_path).StaticFns
     config_path = f"config.{task}"
