@@ -19,6 +19,8 @@ from common.buffer import ReplayBuffer
 from common.logger import Logger
 from trainer import Trainer
 
+from stable_baselines3.common.vec_env import VecVideoRecorder, SubprocVecEnv, DummyVecEnv
+
 
 def get_args():
     parser = argparse.ArgumentParser()

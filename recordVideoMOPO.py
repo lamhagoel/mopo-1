@@ -19,9 +19,6 @@ from common.buffer import ReplayBuffer
 from common.logger import Logger
 from trainer import Trainer
 
-from pathlib import Path
-from IPython import display as ipythondisplay
-
 from stable_baselines3.common.vec_env import VecVideoRecorder, SubprocVecEnv, DummyVecEnv
 
 
