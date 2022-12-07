@@ -173,6 +173,7 @@ class TransitionModel:
         if penalty_coeff != 0:
             if self.penalty_type is None:
                 penalty = np.amax(np.linalg.norm(ensemble_model_stds, axis=2), axis=0)
+                print(str(penalty.shape) + " " + str(ensemble_model_stds.shape) + " " + str(rewards.shape))
                 if not self.printed_penalty:
                     print("Default penalty - max variance norm")
                     self.printed_penalty = True
