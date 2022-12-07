@@ -176,7 +176,7 @@ class TransitionModel:
                 if not self.printed_penalty:
                     print("Default penalty - max variance norm")
                     self.printed_penalty = True
-            elfif self.penalty_type == "ind_var":
+            elif self.penalty_type == "ind_var":
                 penalty = np.linalg.norm(ensemble_model_stds, axis=2)
                 if not self.printed_penalty:
                     print("Penalty - ind variance norm")
