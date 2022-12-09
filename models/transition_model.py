@@ -180,6 +180,7 @@ class TransitionModel:
             elif self.penalty_type == "combined":
                 penalty = np.linalg.norm(ensemble_model_stds[model_idxes, batch_idxes, :], axis=1)
                 penalty += np.amax(np.linalg.norm(ensemble_model_stds, axis=2), axis=0)
+                penalty = 0.5*penalty
                 if not self.printed_penalty:
                     print("Penalty - combined")
                     self.printed_penalty = True
