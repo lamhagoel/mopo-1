@@ -177,6 +177,12 @@ class TransitionModel:
                 if not self.printed_penalty:
                     print("Default penalty - max variance norm")
                     self.printed_penalty = True
+            elif self.penalty_type == "combined":
+                penalty = np.linalg.norm(ensemble_model_stds[model_idxes, batch_idxes, :], axis=1)
+                penalty += np.amax(np.linalg.norm(ensemble_model_stds, axis=2), axis=0)
+                if not self.printed_penalty:
+                    print("Penalty - combined")
+                    self.printed_penalty = True
             elif self.penalty_type == "ind_var":
                 # print(str(ensemble_model_stds.shape) + " " + str(ensemble_model_stds[model_idxes, batch_idxes, :].shape))
                 penalty = np.linalg.norm(ensemble_model_stds[model_idxes, batch_idxes, :], axis=1)
