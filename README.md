@@ -1,3 +1,6 @@
+This repository contains the code for [MOPO]([url](https://proceedings.neurips.cc/paper/2020/hash/a322852ce0df73e204b7e67cbbef0d0a-Abstract.html)) and [COMBO]([url](https://proceedings.neurips.cc/paper/2021/hash/f29a179746902e331572c483c45e5086-Abstract.html))'s reimplementations and various modifications and analysis done with these as explained in the project report titled "RobotLearningProjectReport.pdf".
+
+------------------------------------------------------- Original repository's README below -------------------------------------------------------
 # Overview
 
 This is a re-implementation of the offline model-based RL algorithm MOPO all by pytorch **(including dynamics and mopo algo)** as described in the following paper: [MOPO: Model-based Offline Policy Optimization](https://arxiv.org/pdf/2005.13239.pdf)
